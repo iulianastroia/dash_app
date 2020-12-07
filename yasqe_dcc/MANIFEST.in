@@ -1,0 +1,5 @@
+include yasqe_dcc/yasqe_dcc.dev.js
+include yasqe_dcc/yasqe_dcc.min.js
+include yasqe_dcc/metadata.json
+include yasqe_dcc/package.json
+include README.md

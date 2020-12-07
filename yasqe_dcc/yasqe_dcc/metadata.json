@@ -1,0 +1,48 @@
+{
+  "src/lib/components/YasqeDcc.react.js": {
+    "description": "YasqeDcc is a component which provides SPARQL syntax highlighting.\nIt takes a property, `query` which should be a SPARQl qeury, and\ndisplays it.",
+    "displayName": "YasqeDcc",
+    "methods": [],
+    "props": {
+      "id": {
+        "type": {
+          "name": "string"
+        },
+        "required": true,
+        "description": "The ID used to identify this component in Dash callbacks"
+      },
+      "value": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "A query that will be displayed in the editor.",
+        "defaultValue": {
+          "value": "\"\"",
+          "computed": false
+        }
+      },
+      "style": {
+        "type": {
+          "name": "object"
+        },
+        "required": false,
+        "description": "Style for the component"
+      },
+      "setProps": {
+        "type": {
+          "name": "func"
+        },
+        "required": false,
+        "description": "Dash-assigned callback that should be called whenever any of the\nproperties change"
+      },
+      "className": {
+        "type": {
+          "name": "string"
+        },
+        "required": false,
+        "description": "Often used with CSS to style elements with common properties."
+      }
+    }
+  }
+}
