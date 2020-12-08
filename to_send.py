@@ -31,9 +31,10 @@ def read_file(tab_name):
         # get value without \n
         # output.append(dbc.ListGroupItem(row_value.splitlines(), id=str(row_number), n_clicks=0, action=True))
         if row_number == 0:
-            output.append(dbc.ListGroupItem(row_value, id=str(row_number), n_clicks=0, action=True, disabled=True))
+            output.append(
+                dbc.ListGroupItem(row_value, id={"item": str(row_number)}, n_clicks=0, action=True, disabled=True))       
         else:
-            output.append(dbc.ListGroupItem(row_value, id=str(row_number), n_clicks=0, action=True))
+            output.append(dbc.ListGroupItem(row_value, id={"item": str(row_number)}, n_clicks=0, action=True))
     return output
 
 
@@ -88,9 +89,8 @@ app.layout = html.Div(
 
     ])
 
-
 @app.callback(
-    [Output('wiki_tabs_content', 'children'), Output('length_children_tab', 'children')],
+    [Output('wiki_tabs_content', 'children'), Output('length_children_tab', 'value')],
     [Input('wiki_tabs', 'active_tab')])
 def render_content(tab):
     output = read_file(tab)
@@ -104,34 +104,41 @@ def render_content(tab):
 
 @app.callback(
     [Output("helper", "children"), Output("sparql_query", "value")],
-    [Input(str(i), "n_clicks") for i in range(prefixes_count)],
-    [Input(str(i), "children") for i in range(prefixes_count)],
+    [Input({"item": ALL}, "n_clicks")],
+    [Input({"item": ALL}, "children")],
+    [Input('length_children_tab', 'value')],
     State('sparql_query', 'value'), prevent_initial_call=True
 )
 def func(*args):
     print('len', len(args))
-    sparql_query = ""
+    print("args[1]",args[1])
+    length_children_tab = args[-2]
+    print("args", args)
+    print("callback context ", callback_context.triggered[0])
     trigger = callback_context.triggered[0]
-    # get selected_id from the prefixes list
-    selected_id = trigger["prop_id"].split(".")[0]
-    # selected_value = ""
-    print(selected_id)
-    # cannot select item with id = 0 (first item of list is a prompt text to prevent the selection)
-    if int(selected_id) == 0:
+    selected_value = trigger["prop_id"].split(".")[0]
+    selected_from_value = selected_value.split(":")[1]
+    SELECTED_ID = selected_from_value.split('"')[1]
+    print("SELECTED ID IS ", SELECTED_ID)
+    # SELECTED_VALUE=args[1][int(SELECTED_ID)]
+
+
+    #
+    if int(SELECTED_ID) == 0:
         raise dash.exceptions.PreventUpdate()
     try:
-        print("selected option is ", selected_id)
+        print("selected option is ", SELECTED_ID)
         # get selected item from prefixes list based on the selected id
         # args is a list of all the ids, followed by the prefixes value
-        selected_value = args[int(selected_id) + prefixes_count]
+        SELECTED_VALUE = args[1][int(SELECTED_ID)]
         # sparql_query = args[len(args) - 1] + "\n" + selected_value
         # sparql query holds the query from yasqe, followed by the chosen prefix from the list
-        sparql_query = args[len(args) - 1] + selected_value
+        sparql_query = args[len(args) - 1] + SELECTED_VALUE
         print("sparql query is ", sparql_query)
         print("selected option is ", )
     except ValueError:
         pass
-    return "length of classes/prefixes/prop is " + str(prefixes_count), sparql_query
+    return SELECTED_ID, sparql_query
 
 
 if __name__ == '__main__':
